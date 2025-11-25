@@ -1,3 +1,10 @@
+% Title: 
+% Filename: downsweep_analysis.m
+% Author: Ioan Assenov
+%
+% Description: Data processing script to analyze data collected from the
+% LDV with a downsweep sawtooth wave input.
+
 clear; clc; close all;
 
 % Load data
