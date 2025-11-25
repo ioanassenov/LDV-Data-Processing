@@ -1,7 +1,7 @@
 clear; clc; close all;
 
 % Load data
-data = load("MEMS32_DownSweep_To_Fixed_Test_2.mat");
+data = load("Data/MEMS32_DownSweep_To_Fixed_Test_2.mat");
 
 % Extract relevant fields from the loaded data
 t = data.data.Time;
