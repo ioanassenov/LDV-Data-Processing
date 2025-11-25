@@ -4,7 +4,7 @@ close all;
 % fullSignal = load("fullInputSignal.mat");
 % fullSignal = fullSignal.fullSignal;
 
-data = load("10minLDVrawdata.mat");
+data = load("Data/10minLDVrawdata.mat");
 data = data.data; % Pull table out of 1x1 struct
 
 %%
