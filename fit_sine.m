@@ -13,14 +13,16 @@ function [c,d,phi] = fit_sine(t, x, A, T, phi0, lr, n_iter)
     % lr - Learning rate
     % n_iter - Iterations (epochs)
 
-    % We are optimizing c*A*sin(2*pi/(d*T) + phi) via gradient descent.
+    % Make t and x column vectors if they are not already.
+    t = t(:);
+    x = x(:);
 
     % Initialization
     c = 1.0; 
     d = 1.0;
     phi = phi0;
     N = length(t);
-    mse_history = zeros(1, n_iter);
+    mse_history = zeros(n_iter, 1);
 
     for i = 1:n_iter
         theta = (2*pi / (d*T)) .* t + phi;

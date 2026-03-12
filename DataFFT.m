@@ -23,4 +23,5 @@ freqaxis = fs/L*(-L/2:L/2-1);
 semilogy(freqaxis, Y);
 hold on;
 scatter(freqaxis(locs), peaks, "filled");
+xlabel("Frequency [Hz]");
 xlim([-5e3, 5e3]);
