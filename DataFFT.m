@@ -12,11 +12,11 @@ vldv = data.V_LDV;
 x = calc_displacement(data);
 L = length(time);
 
-Y = fft(x);
+Y = fft(vin);
 Y = abs(fftshift(Y));
 Y = Y/max(Y); % Normalize to max peak
 
-[peaks, locs] = findpeaks(Y, "MinPeakDistance", 10, "MinPeakProminence", 0.001);
+[peaks, locs] = findpeaks(Y, "MinPeakDistance", 10, "MinPeakProminence", 0.001, "SortStr","descend","NPeaks",15);
 
 freqaxis = fs/L*(-L/2:L/2-1);
 
