@@ -12,18 +12,18 @@ close all;
 % Define boundaries for the x axis and apply truncation. This is done to
 % improve performance of MATLAB graph with the huge dataset.
 % To see the full picture, set minTime = 0 and maxTime = 20;
-TRUNC_TIME_MIN = 6; % [s]
-TRUNC_TIME_MAX = 6.1; % [s]
+TRUNC_TIME_MIN = 8; % [s]
+TRUNC_TIME_MAX = 8.1; % [s]
 X_AXIS_MIN     = TRUNC_TIME_MIN;
 X_AXIS_MAX     = TRUNC_TIME_MAX;
 % X_AXIS_MIN     = 5.01; % [s]
 % X_AXIS_MAX     = 5.1; % [s]
 
-% c = 0.9999969708174821; 
-% d = 1.000037630804575; 
-% phi = 3319.720955485615;
+% c = 0.9999999874303999; 
+% d = 1.000135440614378; 
+% phi = 3319.720957040264;
 RUN_FIT_SINE = true;
-LEARNING_RATE = 0.2;
+LEARNING_RATE = 0.01;
 ITERATIONS = 5e3;
 
 % ========== DATA TRUNCATION ==========
@@ -59,8 +59,7 @@ amplitude_vin = (max(vin)-min(vin))/2; % [V]
 % ========== SIGNAL APPROXIMATION ==========
 % Estimate guess signal based on the information from the input.
 % Ideally, all the terms in the guessSignal should be functions of V_in.
-% guess_period = (period_vin*2); % Displacement period is twice the V_in period.
-guess_period = (1/528.35); % Displacement period is twice the V_in period.
+guess_period = 1/estimate_ff(data,fs); % Displacement period is twice the V_in period.
 guess_phase = 2*pi/guess_period; % Phase shift is based on the offset of V_in from x.
 guess_amplitude = amplitude_x; % TODO (make a function of v_in)
 
@@ -89,7 +88,8 @@ plot(time, x, "LineWidth", 1.5, "Color", "blue");
 plot(t, guessSignal, "LineWidth", 1.5, "Color", "#109010", "LineStyle", "-");
 scatter(time(locs_x), peaks_x, 15, "blue", "filled");
 ylim([min(x)*1.1, max(x)*1.1]);
-ylabel('Displacement (m)');
+ylabel('Displacement [m]');
+xlabel('Time [s]')
 xlim([seconds(X_AXIS_MIN), seconds(X_AXIS_MAX)]);
 
 % Right axis: input voltage signal with peaks
@@ -108,6 +108,6 @@ ax = gca;
 ax.Interactions = [zoomInteraction(Dimensions='x'), dataTipInteraction];
 
 
-% legend(["Displacement", "Displacement peaks", "V_{in}", "V_{in} Peaks"], "Location", "bestoutside")
+legend(["Displacement", "Displacement peaks", "Displacement Approximation"])%, "Location", "bestoutside")
 
 % ========== END PLOTTING ==========
