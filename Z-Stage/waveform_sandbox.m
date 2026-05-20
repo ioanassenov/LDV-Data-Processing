@@ -8,7 +8,7 @@ close all;
 % Using device #35
 %
 % Sustained high-displacement nonlinear response with following parameters:
-% SAWTOOTH, Duration: 15, downsweep time: 1.49, Freq high: 3000, Freq low: 2740
+% SAWTOOTH, Duration: 15, downsweep time: 2, Freq high: 3000, Freq low: 2750
 % Using device #35
 %
 % Sustained high-displacement linear response w/ params:
@@ -25,7 +25,7 @@ fl = 2750; % lowest freq (End at this frequency and maintain)
 % downsweepTime = (fh-fl)/sweepRate;
 
 % Define downsweep profile via duration
-downsweepTime = 1.3; % [s] Time in seconds that the downsweep lasts before hold symbol: t_down
+downsweepTime = 3; % [s] Time in seconds that the downsweep lasts before hold symbol: t_down
 sweepRate = (fh-fl)/downsweepTime;
 
 duration = 10; % [s]
@@ -39,7 +39,7 @@ fs = 100000; % Sampling frequency (DAQ Rate)
 amplitude = 25/6; % One side driving voltage divided by the gain.
 tDownsweep = linspace(0, downsweepTime, fs*downsweepTime);
 tHold = linspace(downsweepTime, duration, fs*(duration-downsweepTime));
-t = linspace(0,duration,fs*duration); % t = [tRampup, tHold]; or just total time
+% t = linspace(0,duration,fs*duration); % t = [tRampup, tHold]; or just total time
 
 % Construct waveform
 rampupSignal = linspace(fh, fl, length(tDownsweep));
@@ -124,5 +124,5 @@ fprintf("Program completed.\n");
 % Save time, displacement-frequency plot, and displacement-time plot.
 filename = sprintf("%s,duration-%d,sweeptime-%d,f_h-%d,f_l-%d", waveshape, duration, downsweepTime, fh, fl);
 filename = filename + ".mat";
-save("../Data/"+filename, "t", "fTimeDown", "z_down");
+save("../Data/"+filename, "dataTime", "fTimeDown", "z_down");
 fprintf("Saved %s to Data/\n", filename);
