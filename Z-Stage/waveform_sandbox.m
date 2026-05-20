@@ -1,6 +1,6 @@
 % Clear
 clear; clc;
-% close all;
+close all;
 
 % ------------------------------ Bookmarks --------------------------------
 % Clear nonlinear response between 2780-2860Hz with following parameters:
@@ -18,19 +18,19 @@ clear; clc;
 
 % Adjustable downsweep parameters. If fh is lower than fl it becomes upsweep.
 fh = 3000; % highest freq (Start at this frequency)
-fl = 2740; % lowest freq (End at this frequency and maintain)
+fl = 2750; % lowest freq (End at this frequency and maintain)
 
 % Define downsweep profile via sweeprate
 % sweepRate = 25; % [Hz/s]
 % downsweepTime = (fh-fl)/sweepRate;
 
 % Define downsweep profile via duration
-downsweepTime = 1.49; % [s] Time in seconds that the downsweep lasts before hold symbol: t_down
+downsweepTime = 1.3; % [s] Time in seconds that the downsweep lasts before hold symbol: t_down
 sweepRate = (fh-fl)/downsweepTime;
 
 duration = 10; % [s]
 
-waveshape = "SQUARE"; % Can be SQUARE, SINE, or SAWTOOTH
+waveshape = "SAWTOOTH"; % Can be SQUARE, SINE, or SAWTOOTH
 
 % Create piecewise signal.
 % Sweep down from higher frequency into the frequency we want to hold for
@@ -74,8 +74,9 @@ addoutput(dq,'cDAQ9185-1C61526Mod2',"ao0","Voltage"); % Input voltage (into mirr
 
 % simultaneous acquiring and writing data
 fprintf("Running experiment.\n");
-data2 = readwrite(dq, downsweep'); % IF SQUARE WAVE ADD AN '
-data2 = renamevars(data2,["cDAQ9185-1C61526Mod1_ai0","cDAQ9185-1C61526Mod1_ai1"], ["V_in","V_LDV"]);
+data = readwrite(dq, downsweep'); % IF SQUARE WAVE ADD AN '
+data = renamevars(data,["cDAQ9185-1C61526Mod1_ai0","cDAQ9185-1C61526Mod1_ai1"], ["V_in","V_LDV"]);
+dataTime = seconds(data.Time); % [s] Data time vector in integer form
 
 % Bandpass filter downsweep data
 LDVgain = 125e-3;
@@ -84,8 +85,8 @@ GHPF = tf([1/(2*pi*fHPF) 0], [1/(2*pi*fHPF) 1]);
 fLPF = 10000;
 GLPF = tf(2*pi*fLPF, [1 2*pi*fLPF]);
 Gint = tf([1],[1 0]);
-dzdtfilt = lsim(GHPF,LDVgain*data2.V_LDV,t);
-z_down = lsim(Gint*GHPF*GLPF, dzdtfilt, t); 
+dzdtfilt = lsim(GHPF,LDVgain*data.V_LDV, dataTime);
+z_down = lsim(Gint*GHPF*GLPF, dzdtfilt, dataTime); 
 
 % Plotting
 % close all;
@@ -95,14 +96,14 @@ fprintf("Displaying plot.\n");
 
 figure();
 subplot(2, 1, 1);
-fTimeDown = linspace(fh,fl,length(t));
+fTimeDown = linspace(fh,fl,length(dataTime));
 plot(fTimeDown, z_down);
 title("Displacement vs Frequency (Downsweep)", paramString);
 xlabel("Frequency [Hz]");
 ylabel("Displacement [m]");
 
 subplot(2, 1, 2);
-plot(t, z_down);
+plot(dataTime, z_down);
 xline(downsweepTime, '--k'); % Vertical line at downsweep end time.
 title("Displacement vs Time (Downsweep)");
 xlabel("Time [s]"); ylabel("Displacement [m]");
@@ -119,7 +120,7 @@ function outputArray = duty_cycle(array, d, a)
 end
 
 fprintf("Program completed.\n");
-% Save data file
+%% Save data file
 % Save time, displacement-frequency plot, and displacement-time plot.
 filename = sprintf("%s,duration-%d,sweeptime-%d,f_h-%d,f_l-%d", waveshape, duration, downsweepTime, fh, fl);
 filename = filename + ".mat";
